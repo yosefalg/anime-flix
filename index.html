@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* نفس الأنماط التي لديك، سأضيف بعض التحسينات الصغيرة */
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
@@ -25,11 +26,7 @@
             --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.4);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Tajawal', sans-serif;
@@ -39,34 +36,13 @@
             min-height: 100vh;
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--darker);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--gradient-1);
-            border-radius: 4px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--darker); }
+        ::-webkit-scrollbar-thumb { background: var(--gradient-1); border-radius: 4px; }
 
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-        .bg-animation .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.4;
-            animation: float 20s infinite ease-in-out;
-        }
-        .orb-1 { width: 400px; height: 400px; background: var(--primary); top: -10%; left: -10%; animation-delay: 0s; }
+        .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .bg-animation .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: float 20s infinite ease-in-out; }
+        .orb-1 { width: 400px; height: 400px; background: var(--primary); top: -10%; left: -10%; }
         .orb-2 { width: 300px; height: 300px; background: var(--secondary); top: 60%; right: -5%; animation-delay: -5s; }
         .orb-3 { width: 350px; height: 350px; background: var(--accent); bottom: -10%; left: 30%; animation-delay: -10s; }
         .orb-4 { width: 250px; height: 250px; background: #0ea5e9; top: 30%; left: 60%; animation-delay: -15s; }
@@ -77,244 +53,440 @@
             66% { transform: translate(-20px, 20px) scale(0.9); }
         }
 
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(15, 15, 26, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-        }
-        .navbar.scrolled {
-            background: rgba(15, 15, 26, 0.95);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-        }
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            color: var(--text);
-        }
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: var(--gradient-1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
-            50% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }
-        }
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 0.5rem 0;
-        }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient-1);
-            transition: width 0.3s ease;
-        }
-        .nav-links a:hover {
-            color: var(--text);
-        }
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        .nav-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-        .btn {
-            padding: 0.6rem 1.5rem;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-family: 'Tajawal', sans-serif;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
-        }
-        .btn-primary {
-            background: var(--gradient-1);
-            color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-glow);
-        }
-        .btn-ghost {
-            background: transparent;
-            color: var(--text);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .btn-ghost:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: var(--primary);
-        }
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
+        .navbar { position: fixed; top: 0; width: 100%; z-index: 1000; background: rgba(15, 15, 26, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; }
+        .navbar.scrolled { background: rgba(15,15,26,0.95); box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .nav-container { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); }
+        .logo-icon { width: 45px; height: 45px; background: var(--gradient-1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,0.7);} 50%{box-shadow:0 0 0 15px rgba(99,102,241,0);} }
+        .logo-text { font-size: 1.5rem; font-weight: 800; background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 500; transition: all 0.3s ease; position: relative; padding: 0.5rem 0; }
+        .nav-links a::after { content: ''; position: absolute; bottom: 0; right: 0; width: 0; height: 2px; background: var(--gradient-1); transition: width 0.3s ease; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-actions { display: flex; gap: 1rem; align-items: center; }
+        .btn { padding: 0.6rem 1.5rem; border-radius: 10px; border: none; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 600; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; }
+        .btn-primary { background: var(--gradient-1); color: white; box-shadow: 0 4px 15px rgba(99,102,241,0.4); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+        .btn-ghost { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,0.1); }
+        .btn-ghost:hover { background: rgba(255,255,255,0.05); border-color: var(--primary); }
+        .mobile-menu-btn { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
 
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8rem 2rem 4rem;
-            position: relative;
-        }
-        .hero-content {
-            text-align: center;
-            max-width: 900px;
-        }
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1.25rem;
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 50px;
-            font-size: 0.9rem;
-            color: var(--primary);
-            margin-bottom: 2rem;
-            animation: fadeInDown 0.8s ease;
-        }
-        .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 900;
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-            animation: fadeInUp 0.8s ease 0.2s both;
-        }
-        .hero h1 span {
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            margin-bottom: 2.5rem;
-            line-height: 1.8;
-            animation: fadeInUp 0.8s ease 0.4s both;
-        }
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin-bottom: 3rem;
-            animation: fadeInUp 0.8s ease 0.6s both;
-        }
-        .stat-item {
-            text-align: center;
-        }
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .stat-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            animation: fadeInUp 0.8s ease 0.8s both;
-        }
-        .btn-large {
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
-            border-radius: 14px;
-        }
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 8rem 2rem 4rem; text-align: center; }
+        .hero-badge { display: inline-flex; gap: 0.5rem; padding: 0.5rem 1.25rem; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.3); border-radius: 50px; margin-bottom: 2rem; }
+        .hero h1 { font-size: clamp(2.5rem,6vw,4.5rem); font-weight: 900; margin-bottom: 1.5rem; }
+        .hero h1 span { background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 2.5rem; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .hero-stats { display: flex; justify-content: center; gap: 3rem; margin-bottom: 3rem; flex-wrap: wrap; }
+        .stat-number { font-size: 2.5rem; font-weight: 800; background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .search-section { padding: 2rem; max-width: 800px; margin: 0 auto; }
+        .search-box { background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+        .search-box input { flex: 1; background: none; border: none; color: var(--text); font-size: 1.1rem; outline: none; }
+        .search-filters { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; justify-content: center; }
+        .filter-chip { padding: 0.5rem 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
+        .filter-chip.active, .filter-chip:hover { background: var(--gradient-1); color: white; border-color: transparent; }
 
-        .search-section {
-            padding: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding: 0 2rem; flex-wrap: wrap; gap: 1rem; }
+        .section-title { font-size: 1.75rem; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; }
+        .anime-section, .categories-section, .ai-section, .sources-section { padding: 3rem 2rem; max-width: 1400px; margin: 0 auto; }
+        .anime-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+        .anime-card { background: var(--card); border-radius: 16px; overflow: hidden; transition: all 0.3s; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
+        .anime-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-glow); }
+        .anime-card-image { position: relative; aspect-ratio: 3/4; overflow: hidden; }
+        .anime-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .anime-card:hover .anime-card-image img { transform: scale(1.05); }
+        .anime-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,15,26,0.9) 0%, transparent 60%); opacity: 0; transition: opacity 0.3s; display: flex; align-items: flex-end; padding: 1rem; }
+        .anime-card:hover .anime-overlay { opacity: 1; }
+        .play-btn { width: 45px; height: 45px; background: var(--gradient-1); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .anime-badge { position: absolute; top: 10px; right: 10px; padding: 0.25rem 0.75rem; border-radius: 8px; font-size: 0.75rem; font-weight: bold; }
+        .badge-new { background: var(--gradient-2); }
+        .badge-hot { background: var(--gradient-3); }
+        .anime-info { padding: 1rem; }
+        .anime-title { font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.5rem; }
+        .anime-meta { display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 0.85rem; }
+        .anime-rating { color: #fbbf24; }
+
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 1rem; }
+        .category-card { background: var(--card); padding: 1.5rem; text-align: center; border-radius: 16px; cursor: pointer; transition: 0.3s; }
+        .category-card:hover { transform: translateY(-5px); border: 1px solid var(--primary); }
+        .category-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+        .ai-card { background: var(--card); border-radius: 24px; padding: 2rem; text-align: center; border: 1px solid rgba(99,102,241,0.2); }
+        .ai-input-group { display: flex; gap: 1rem; max-width: 600px; margin: 1rem auto; flex-wrap: wrap; justify-content: center; }
+        .ai-input { flex: 1; padding: 0.75rem 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; }
+        .ai-results { margin-top: 2rem; text-align: right; display: none; }
+        .ai-results.show { display: block; }
+
+        .sources-list { display: flex; flex-direction: column; gap: 1rem; }
+        .source-item { background: var(--card); border-radius: 16px; padding: 1rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .source-rank { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .rank-1 { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: black; }
+        .rank-2 { background: linear-gradient(135deg,#e5e7eb,#9ca3af); color: black; }
+        .rank-3 { background: linear-gradient(135deg,#fdba74,#ea580c); color: black; }
+        .rank-other { background: var(--card-hover); }
+        .source-score { color: #fbbf24; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--card); border-radius: 20px; width: 90%; max-width: 1000px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .video-container { aspect-ratio: 16/9; background: black; }
+        .video-container iframe { width: 100%; height: 100%; }
+        .server-list, .episode-grid { display: flex; gap: 0.5rem; flex-wrap: wrap; padding: 1rem; }
+        .server-btn, .episode-btn { padding: 0.5rem 1rem; background: rgba(255,255,255,0.05); border-radius: 10px; border: none; color: white; cursor: pointer; }
+        .server-btn.active, .episode-btn.active { background: var(--gradient-1); }
+
+        .footer { background: var(--dark); padding: 3rem 2rem 1rem; margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.05); }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 2rem; max-width: 1400px; margin: auto; }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; max-width: 1400px; margin: 2rem auto 0; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); }
+        .social-links { display: flex; gap: 1rem; }
+
+        .loading-screen { position: fixed; inset: 0; background: var(--darker); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s; }
+        .loading-screen.hidden { opacity: 0; visibility: hidden; }
+        .loader { width: 80px; height: 80px; position: relative; }
+        .loader-ring { position: absolute; inset: 0; border-radius: 50%; border: 4px solid transparent; border-top-color: var(--primary); animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .anime-grid { grid-template-columns: repeat(2,1fr); }
         }
-        .search-box {
-            position: relative;
-            background: var(--card);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 1.25rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-card);
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="loading-screen" id="loadingScreen">
+    <div class="loader"><div class="loader-ring"></div><div class="loader-ring"></div><div class="loader-ring"></div></div>
+    <div class="loading-text">جاري تحميل عالم الأنمي...</div>
+</div>
+
+<div class="bg-animation"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div><div class="orb orb-4"></div></div>
+
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="#" class="logo"><div class="logo-icon"><i class="fas fa-play"></i></div><span class="logo-text">أنيمي فليكس</span></a>
+        <ul class="nav-links">
+            <li><a href="#home"><i class="fas fa-home"></i> الرئيسية</a></li>
+            <li><a href="#trending"><i class="fas fa-fire"></i> الأكثر مشاهدة</a></li>
+            <li><a href="#categories"><i class="fas fa-th-large"></i> التصنيفات</a></li>
+            <li><a href="#ai-search"><i class="fas fa-robot"></i> البحث الذكي</a></li>
+            <li><a href="#sources"><i class="fas fa-server"></i> المصادر</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="btn btn-ghost" id="favoritesBtn"><i class="fas fa-heart"></i> مفضلتي</button>
+            <button class="btn btn-primary" id="loginBtn"><i class="fas fa-user"></i> تسجيل الدخول</button>
+            <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+</nav>
+
+<section class="hero" id="home">
+    <div class="hero-content">
+        <div class="hero-badge"><i class="fas fa-sparkles"></i> منصة الأنمي الأكثر تطوراً في العالم العربي</div>
+        <h1>شاهد آلاف الحلقات<br><span>من الأنمي الياباني والكوري والصيني</span></h1>
+        <p>منصة متكاملة تجمع لك الأنمي من جميع المصادر العالمية بجودة عالية وترجمة احترافية. بحث ذكي، مشغل سحابي، وتصنيفات متعددة.</p>
+        <div class="hero-stats">
+            <div><div class="stat-number" id="animeCount">0</div><div>عنوان أنمي</div></div>
+            <div><div class="stat-number" id="epCount">0</div><div>حلقة</div></div>
+            <div><div class="stat-number">50+</div><div>مصدر عالمي</div></div>
+        </div>
+        <div class="hero-buttons">
+            <button class="btn btn-primary btn-large" onclick="scrollToSection('trending')"><i class="fas fa-play"></i> ابدأ المشاهدة</button>
+            <button class="btn btn-ghost btn-large" onclick="scrollToSection('ai-search')"><i class="fas fa-robot"></i> البحث الذكي</button>
+        </div>
+    </div>
+</section>
+
+<section class="search-section">
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="ابحث عن أنمي، مسلسل، أو حلقة..." id="searchInput">
+        <button class="btn btn-primary" onclick="performSearch()"><i class="fas fa-arrow-left"></i></button>
+    </div>
+    <div class="search-filters" id="filterContainer"></div>
+</section>
+
+<section class="anime-section" id="trending"><div class="section-header"><h2 class="section-title"><i class="fas fa-fire"></i> الأكثر مشاهدة هذا الموسم</h2></div><div class="anime-grid" id="trendingGrid"></div></section>
+<section class="categories-section" id="categories"><div class="section-header"><h2 class="section-title"><i class="fas fa-th-large"></i> تصفح حسب التصنيف</h2></div><div class="categories-grid" id="categoriesGrid"></div></section>
+<section class="anime-section"><div class="section-header"><h2 class="section-title"><i class="fas fa-clock"></i> جديد الإصدارات</h2></div><div class="anime-grid" id="newGrid"></div></section>
+<section class="ai-section" id="ai-search"><div class="ai-card"><div class="ai-icon">🤖</div><h2 class="ai-title">البحث الذكي بالذكاء الاصطناعي</h2><p class="ai-desc">صف لي الأنمي الذي تبحث عنه وسأجده لك.</p><div class="ai-input-group"><input type="text" class="ai-input" placeholder="مثال: أنمي عن ساحر قوي يدخل مدرسة سحر" id="aiInput"><button class="btn btn-primary" onclick="performAISearch()"><i class="fas fa-wand-magic-sparkles"></i> بحث ذكي</button></div><div class="ai-results" id="aiResults"></div></div></section>
+<section class="sources-section" id="sources"><div class="section-header"><h2 class="section-title"><i class="fas fa-server"></i> أفضل مصادر الأنمي</h2></div><div class="sources-list" id="sourcesList"></div></section>
+
+<footer class="footer"><div class="footer-grid"><div class="footer-brand"><span class="logo-text">أنيمي فليكس</span><p>منصة عربية متكاملة لمشاهدة الأنمي. نجمع لك المحتوى من أفضل المصادر العالمية بجودة عالية.</p></div><div><h3>روابط سريعة</h3><ul><li><a href="#">الرئيسية</a></li><li><a href="#">قائمة الأنمي</a></li></ul></div><div><h3>التصنيفات</h3><ul><li><a href="#">أكشن</a></li><li><a href="#">دراما</a></li></ul></div><div><h3>تواصل معنا</h3><ul><li><a href="#">من نحن</a></li><li><a href="#">سياسة الخصوصية</a></li></ul></div></div><div class="footer-bottom"><div>© 2026 أنيمي فليكس</div><div class="social-links"><a href="#"><i class="fab fa-discord"></i></a><a href="#"><i class="fab fa-telegram"></i></a><a href="#"><i class="fab fa-twitter"></i></a></div></div></footer>
+
+<div class="modal-overlay" id="videoModal"><div class="modal-content"><div class="modal-header"><h3 id="modalTitle">عنوان الأنمي</h3><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div><div class="video-container"><iframe id="videoFrame" allowfullscreen></iframe><div id="videoPlaceholder" style="display:flex; align-items:center; justify-content:center; height:100%; background:#000; color:white;">اختر سيرفراً للمشاهدة</div></div><div class="server-selector"><div class="server-label">اختر السيرفر:</div><div class="server-list" id="serverList"></div></div><div class="episode-selector"><div class="server-label">اختر الحلقة:</div><div class="episode-grid" id="episodeGrid"></div></div></div></div>
+
+<script>
+    // ======================== البيانات والوظائف الأساسية ========================
+    let allAnime = [];          // سيتم جلبها من API
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    let currentAnime = null;
+    let currentUser = JSON.parse(localStorage.getItem('user')) || null;
+
+    // جلب بيانات الأنمي من Jikan API (MyAnimeList)
+    async function fetchAnime() {
+        try {
+            const response = await fetch('https://api.jikan.moe/v4/top/anime?limit=24&filter=bypopularity');
+            const data = await response.json();
+            allAnime = data.data.map(anime => ({
+                id: anime.mal_id,
+                title: anime.title,
+                image: anime.images.jpg.image_url,
+                rating: anime.score || 'N/A',
+                episodes: anime.episodes || '?',
+                genres: anime.genres.map(g => g.name),
+                synopsis: anime.synopsis,
+                trailer_url: anime.trailer?.url || null,
+                year: anime.year
+            }));
+            // تحديث الإحصائيات
+            document.getElementById('animeCount').innerText = allAnime.length;
+            const totalEp = allAnime.reduce((sum, a) => sum + (a.episodes === '?' ? 0 : a.episodes), 0);
+            document.getElementById('epCount').innerText = totalEp.toLocaleString();
+            renderAnimeCards('trendingGrid', allAnime.slice(0,12));
+            renderAnimeCards('newGrid', allAnime.slice(12,24));
+            renderCategoriesFromAnime();
+        } catch (error) {
+            console.error('خطأ في جلب البيانات:', error);
+            document.getElementById('trendingGrid').innerHTML = '<p style="text-align:center;">حدث خطأ في تحميل البيانات. تأكد من اتصالك بالإنترنت.</p>';
         }
-        .search-box:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), var(--shadow-card);
+    }
+
+    // استخراج التصنيفات الفريدة من الأنمي
+    function renderCategoriesFromAnime() {
+        const genreMap = new Map();
+        allAnime.forEach(anime => {
+            anime.genres.forEach(g => {
+                if (!genreMap.has(g)) genreMap.set(g, 0);
+                genreMap.set(g, genreMap.get(g) + 1);
+            });
+        });
+        const categories = Array.from(genreMap.entries()).map(([name, count]) => ({ name, count, icon: getIconForGenre(name) }));
+        const container = document.getElementById('categoriesGrid');
+        container.innerHTML = categories.map(cat => `
+            <div class="category-card" onclick="filterByCategory('${cat.name}')">
+                <div class="category-icon">${cat.icon}</div>
+                <div class="category-name">${cat.name}</div>
+                <div class="category-count">${cat.count} عنوان</div>
+            </div>
+        `).join('');
+        // إضافة فلتر التصنيفات في البحث
+        const filterContainer = document.getElementById('filterContainer');
+        filterContainer.innerHTML = `<button class="filter-chip active" data-cat="all">الكل</button>` +
+            categories.slice(0,10).map(cat => `<button class="filter-chip" data-cat="${cat.name}">${cat.name}</button>`).join('');
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                const category = this.getAttribute('data-cat');
+                if (category === 'all') renderAnimeCards('trendingGrid', allAnime.slice(0,12));
+                else {
+                    const filtered = allAnime.filter(a => a.genres.includes(category));
+                    renderAnimeCards('trendingGrid', filtered.slice(0,12));
+                }
+            });
+        });
+    }
+
+    function getIconForGenre(genre) {
+        const icons = { أكشن: '⚔️', مغامرات: '🗺️', كوميديا: '😂', دراما: '🎭', خيال: '✨', رومانسي: '💕', رعب: '👻', سينين: '🍷', شونين: '👊' };
+        return icons[genre] || '📺';
+    }
+
+    function renderAnimeCards(containerId, animeList) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = animeList.map(anime => `
+            <div class="anime-card" onclick="openAnimeModal(${anime.id})">
+                <div class="anime-card-image">
+                    <img src="${anime.image}" alt="${anime.title}" loading="lazy">
+                    <div class="anime-overlay"><div class="play-btn"><i class="fas fa-play"></i></div></div>
+                    ${anime.rating > 8.5 ? '<span class="anime-badge badge-hot">شائع</span>' : ''}
+                </div>
+                <div class="anime-info">
+                    <h3 class="anime-title">${anime.title}</h3>
+                    <div class="anime-meta">
+                        <div class="anime-rating"><i class="fas fa-star"></i> ${anime.rating}</div>
+                        <span><i class="fas fa-list-ol"></i> ${anime.episodes}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // فتح المودال مع بيانات الأنمي الحقيقية
+    function openAnimeModal(animeId) {
+        const anime = allAnime.find(a => a.id === animeId);
+        if (!anime) return;
+        currentAnime = anime;
+        document.getElementById('modalTitle').innerHTML = `${anime.title} ${favorites.includes(anime.id) ? '❤️' : '🤍'}`;
+        // إنشاء سيرفرات وهمية (لأن API لا يوفر روابط مشاهدة)
+        const servers = [
+            { name: 'سيرفر يوتيوب (تجريبي)', quality: '1080p', url: anime.trailer_url || 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+            { name: 'سيرفر عربي (مثال)', quality: '720p', url: '#' }
+        ];
+        const serverList = document.getElementById('serverList');
+        serverList.innerHTML = servers.map((s, idx) => `<button class="server-btn ${idx===0?'active':''}" onclick="selectServer(${idx}, '${s.url}', '${s.name}')">${s.name} (${s.quality})</button>`).join('');
+        // توليد الحلقات
+        let eps = anime.episodes;
+        if (eps === '?' || eps > 100) eps = 24;
+        const episodeGrid = document.getElementById('episodeGrid');
+        let epsHtml = '';
+        for (let i=1; i<=Math.min(eps, 50); i++) {
+            epsHtml += `<button class="episode-btn ${i===1?'active':''}" onclick="selectEpisode(${i}, this)">${i}</button>`;
         }
-        .search-box i {
-            color: var(--text-muted);
+        episodeGrid.innerHTML = epsHtml;
+        document.getElementById('videoModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        // تحميل الفيديو تلقائياً لأول سيرفر
+        selectServer(0, servers[0].url, servers[0].name);
+    }
+
+    function selectServer(index, url, name) {
+        const btns = document.querySelectorAll('.server-btn');
+        btns.forEach((btn,i) => btn.classList.toggle('active', i===index));
+        const iframe = document.getElementById('videoFrame');
+        const placeholder = document.getElementById('videoPlaceholder');
+        if (url && url !== '#') {
+            iframe.src = url;
+            iframe.style.display = 'block';
+            placeholder.style.display = 'none';
+        } else {
+            iframe.style.display = 'none';
+            placeholder.style.display = 'flex';
+            placeholder.innerHTML = `<div style="text-align:center;"><i class="fas fa-exclamation-triangle"></i><p>لا يوجد رابط مشاهدة حقيقي لهذا السيرفر. يمكنك إضافة رابطك الخاص.</p></div>`;
+        }
+    }
+
+    function selectEpisode(ep, element) {
+        document.querySelectorAll('.episode-btn').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+        alert(`تم اختيار الحلقة ${ep} من ${currentAnime.title}. (في النسخة النهائية سيتم تغيير رابط الفيديو هنا)`);
+    }
+
+    function closeModal() {
+        document.getElementById('videoModal').classList.remove('active');
+        document.body.style.overflow = '';
+        document.getElementById('videoFrame').src = '';
+    }
+
+    // البحث
+    function performSearch() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        if (!query) return;
+        const results = allAnime.filter(a => a.title.toLowerCase().includes(query));
+        renderAnimeCards('trendingGrid', results.slice(0,12));
+        if(results.length === 0) alert('لم يتم العثور على نتائج');
+    }
+
+    // البحث الذكي (محاكاة)
+    function performAISearch() {
+        const query = document.getElementById('aiInput').value;
+        const resultsDiv = document.getElementById('aiResults');
+        if(!query) return;
+        resultsDiv.innerHTML = '<div style="text-align:center;"><i class="fas fa-spinner fa-pulse"></i> جاري البحث...</div>';
+        resultsDiv.classList.add('show');
+        setTimeout(() => {
+            const related = allAnime.filter(a => a.synopsis && a.synopsis.toLowerCase().includes(query.toLowerCase()) || a.title.toLowerCase().includes(query.toLowerCase())).slice(0,3);
+            if(related.length === 0) resultsDiv.innerHTML = '<p>لم يتم العثور على أنمي مشابه. جرب وصفاً آخر.</p>';
+            else resultsDiv.innerHTML = `<h3>نتائج مشابهة:</h3>` + related.map(anime => `
+                <div class="ai-result-item" style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem; border-bottom:1px solid #333;">
+                    <span>${anime.title}</span>
+                    <button class="btn btn-primary" onclick="openAnimeModal(${anime.id}); closeModalAITemp();">مشاهدة</button>
+                </div>
+            `).join('');
+        }, 1000);
+    }
+    function closeModalAITemp() { document.getElementById('videoModal').classList.remove('active'); document.body.style.overflow = ''; }
+
+    // المفضلة
+    function toggleFavorite(animeId) {
+        if(favorites.includes(animeId)) favorites = favorites.filter(id => id !== animeId);
+        else favorites.push(animeId);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        alert( favorites.includes(animeId) ? 'تمت الإضافة إلى المفضلة' : 'تمت الإزالة من المفضلة');
+        if(currentAnime && currentAnime.id === animeId) document.getElementById('modalTitle').innerHTML = `${currentAnime.title} ${favorites.includes(animeId) ? '❤️' : '🤍'}`;
+    }
+    // عرض المفضلة
+    function showFavorites() {
+        const favAnime = allAnime.filter(a => favorites.includes(a.id));
+        if(favAnime.length === 0) alert('لا توجد عناصر في المفضلة');
+        else renderAnimeCards('trendingGrid', favAnime);
+        scrollToSection('trending');
+    }
+
+    // تسجيل دخول وهمي
+    function handleLogin() {
+        if(currentUser) {
+            localStorage.removeItem('user');
+            currentUser = null;
+            document.getElementById('loginBtn').innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
+            alert('تم تسجيل الخروج');
+        } else {
+            let name = prompt('أدخل اسم المستخدم:');
+            if(name) {
+                currentUser = { name };
+                localStorage.setItem('user', JSON.stringify(currentUser));
+                document.getElementById('loginBtn').innerHTML = `<i class="fas fa-user"></i> مرحباً ${name}`;
+                alert(`أهلاً ${name}! يمكنك الآن إضافة المفضلة.`);
+            }
+        }
+    }
+
+    // مصادر وهمية
+    const sources = [
+        { name: "Crunchyroll", score: 9.8, quality: "ممتاز" },
+        { name: "Netflix Anime", score: 9.5, quality: "ممتاز" },
+        { name: "Funimation", score: 9.2, quality: "جيد جداً" }
+    ];
+    function renderSources() {
+        const container = document.getElementById('sourcesList');
+        container.innerHTML = sources.map((s,i) => `
+            <div class="source-item"><div class="source-rank rank-${i+1}">${i+1}</div><div>${s.name}</div><div>⭐ ${s.score}</div><div>${s.quality}</div></div>
+        `).join('');
+    }
+
+    // المساعدة
+    function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+    function filterByCategory(cat) {
+        const filtered = allAnime.filter(a => a.genres.includes(cat));
+        renderAnimeCards('trendingGrid', filtered.slice(0,12));
+        scrollToSection('trending');
+    }
+
+    window.addEventListener('load', async () => {
+        await fetchAnime();
+        renderSources();
+        if(currentUser) document.getElementById('loginBtn').innerHTML = `<i class="fas fa-user"></i> مرحباً ${currentUser.name}`;
+        document.getElementById('loadingScreen').classList.add('hidden');
+        document.getElementById('favoritesBtn').onclick = showFavorites;
+        document.getElementById('loginBtn').onclick = handleLogin;
+        // أضف زر المفضلة في المودال لاحقاً (يمكن تعديله)
+        window.addEventListener('scroll', () => {
+            if(window.scrollY>50) document.getElementById('navbar').classList.add('scrolled');
+            else document.getElementById('navbar').classList.remove('scrolled');
+            document.querySelectorAll('.reveal').forEach(el => {
+                if(el.getBoundingClientRect().top < window.innerHeight-100) el.classList.add('active');
+            });
+        });
+        document.querySelectorAll('.reveal').forEach(el => el.classList.add('reveal'));
+    });
+    window.openAnimeModal = openAnimeModal;
+    window.closeModal = closeModal;
+    window.selectServer = selectServer;
+    window.selectEpisode = selectEpisode;
+    window.performSearch = performSearch;
+    window.performAISearch = performAISearch;
+    window.filterByCategory = filterByCategory;
+    window.scrollToSection = scrollToSection;
+</script>
+</body>
+</html>);
             font-size: 1.25rem;
         }
         .search-box input {
