@@ -2,79 +2,22 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANIME FLIX | المشغل الحقيقي</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        :root { --main: #7c3aed; --bg: #020617; --card: #0f172a; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
-        .card { background: var(--card); border-radius: 15px; overflow: hidden; cursor: pointer; border: 1px solid #1e293b; }
-        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-        .card h3 { font-size: 0.9rem; padding: 10px; margin: 0; text-align: center; }
-        
-        /* Modal Player */
-        #player { position: fixed; inset: 0; background: #000; display: none; flex-direction: column; z-index: 100; }
-        .video-container { width: 100%; aspect-ratio: 16/9; }
-        iframe { width: 100%; height: 100%; border: none; }
-        .ep-list { padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; overflow-y: auto; }
-        .ep-btn { background: #1e293b; color: #fff; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
-        .ep-btn.active { background: var(--main); }
-        .close-btn { position: absolute; top: 10px; left: 10px; font-size: 2rem; cursor: pointer; color: #fff; z-index: 101; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>أنيمي فليكس | منصة الأنمي العملاقة</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
 </head>
 <body>
+    <div id="loader" class="loader"><div class="spinner"></div><p>جاري تحميل المنصة العملاقة...</p></div>
+    <header id="header"></header>
+    <main id="app"></main>
+    <div id="modal" class="modal"></div>
+    <footer id="footer"></footer>
 
-    <h2 style="text-align: center; color: var(--main);">ANIME FLIX</h2>
-    <div class="grid" id="mainGrid"></div>
-
-    <div id="player">
-        <span class="close-btn" onclick="closePlayer()">&times;</span>
-        <div class="video-container">
-            <iframe id="mainIframe" src="" allowfullscreen></iframe>
-        </div>
-        <div class="ep-list" id="epList"></div>
-    </div>
-
-    <script>
-        async function init() {
-            try {
-                // جلب البيانات من ملف data.json الذي أنشأته
-                const res = await fetch('data.json');
-                const data = await res.json();
-                const grid = document.getElementById('mainGrid');
-
-                grid.innerHTML = data.animes.map(anime => `
-                    <div class="card" onclick="openPlayer('${anime.title}', ${JSON.stringify(anime.episodes)})">
-                        <img src="${anime.poster}">
-                        <h3>${anime.title}</h3>
-                    </div>
-                `).join('');
-            } catch (e) { alert("خطأ في جلب البيانات!"); }
-        }
-
-        function openPlayer(title, episodes) {
-            document.getElementById('player').style.display = 'flex';
-            const epList = document.getElementById('epList');
-            epList.innerHTML = episodes.map(ep => `
-                <button class="ep-btn" onclick="play('${ep.url}', this)">${ep.num}</button>
-            `).join('');
-            // تشغيل الحلقة الأولى تلقائياً
-            if(episodes.length > 0) play(episodes[0].url, epList.firstChild);
-        }
-
-        function play(url, btn) {
-            document.getElementById('mainIframe').src = url;
-            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-        }
-
-        function closePlayer() {
-            document.getElementById('player').style.display = 'none';
-            document.getElementById('mainIframe').src = '';
-        }
-
-        window.onload = init;
-    </script>
+    <!-- المكتبات الخارجية -->
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
