@@ -3,187 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANIME FLIX | المنصة الاحترافية</title>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <title>ANIME FLIX | المشغل الحقيقي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-
     <style>
-        :root {
-            --primary: #7c3aed;
-            --bg: #020617;
-            --surface: #0f172a;
-            --glass: rgba(15, 23, 42, 0.8);
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background-color: var(--bg); color: #fff; line-height: 1.6; }
-
-        /* Navigation */
-        nav {
-            position: fixed; top: 0; width: 100%; height: 70px;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 5%; background: var(--glass); backdrop-filter: blur(20px);
-            z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .logo { font-size: 1.5rem; font-weight: 900; color: var(--primary); }
-
-        /* Hero Slider */
-        .hero-section { margin-top: 70px; padding: 20px 0; }
-        .swiper { width: 100%; padding: 20px 0 50px; }
-        .swiper-slide {
-            width: 280px; height: 400px; border-radius: 20px; overflow: hidden;
-            position: relative; border: 1px solid rgba(255,255,255,0.1);
-        }
-        .slide-overlay {
-            position: absolute; bottom: 0; width: 100%; padding: 20px;
-            background: linear-gradient(transparent, #000);
-        }
-
-        /* Main Grid */
-        .container { padding: 40px 5%; }
-        .grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 25px;
-        }
-        .anime-card {
-            background: var(--surface); border-radius: 15px; overflow: hidden;
-            transition: var(--transition); border: 1px solid rgba(255,255,255,0.05);
-            cursor: pointer; position: relative;
-        }
-        .anime-card:hover { transform: translateY(-10px); border-color: var(--primary); }
-        .anime-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-        .card-body { padding: 12px; }
-
-        /* Advanced Cloud Player Modal */
-        #playerModal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.98);
-            z-index: 2000; display: none; flex-direction: column;
-            padding: 20px; overflow-y: auto;
-        }
-        .player-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .player-wrapper {
-            width: 100%; max-width: 1100px; margin: 0 auto;
-            background: #000; border-radius: 20px; overflow: hidden;
-            box-shadow: 0 0 50px rgba(124, 58, 237, 0.3);
-        }
-        .video-container { position: relative; aspect-ratio: 16/9; }
-        .video-container iframe { width: 100%; height: 100%; border: none; }
-
-        /* Episode List Styles */
-        .ep-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 10px; margin-top: 30px; max-width: 1100px; margin-inline: auto;
-        }
-        .ep-btn {
-            background: var(--surface); border: 1px solid var(--border); color: #fff;
-            padding: 10px; border-radius: 8px; cursor: pointer; text-align: center;
-        }
-        .ep-btn.active { background: var(--primary); }
-
-        @media (max-width: 768px) {
-            .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        }
+        :root { --main: #7c3aed; --bg: #020617; --card: #0f172a; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
+        .card { background: var(--card); border-radius: 15px; overflow: hidden; cursor: pointer; border: 1px solid #1e293b; }
+        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .card h3 { font-size: 0.9rem; padding: 10px; margin: 0; text-align: center; }
+        
+        /* Modal Player */
+        #player { position: fixed; inset: 0; background: #000; display: none; flex-direction: column; z-index: 100; }
+        .video-container { width: 100%; aspect-ratio: 16/9; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .ep-list { padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; overflow-y: auto; }
+        .ep-btn { background: #1e293b; color: #fff; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
+        .ep-btn.active { background: var(--main); }
+        .close-btn { position: absolute; top: 10px; left: 10px; font-size: 2rem; cursor: pointer; color: #fff; z-index: 101; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">ANIME-FLIX</div>
-        <div class="nav-icons">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </div>
-    </nav>
+    <h2 style="text-align: center; color: var(--main);">ANIME FLIX</h2>
+    <div class="grid" id="mainGrid"></div>
 
-    <div class="hero-section">
-        <div class="swiper mySwiper">
-            <div class="swiper-wrapper" id="trending"></div>
+    <div id="player">
+        <span class="close-btn" onclick="closePlayer()">&times;</span>
+        <div class="video-container">
+            <iframe id="mainIframe" src="" allowfullscreen></iframe>
         </div>
+        <div class="ep-list" id="epList"></div>
     </div>
 
-    <main class="container">
-        <h2 style="margin-bottom: 30px;">اكتشف الأنمي 🔥</h2>
-        <div class="grid" id="mainGrid"></div>
-    </main>
-
-    <div id="playerModal">
-        <div class="player-header">
-            <h2 id="modalTitle">اسم الأنمي</h2>
-            <button onclick="closePlayer()" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;">&times;</button>
-        </div>
-        <div class="player-wrapper">
-            <div class="video-container">
-                <iframe id="mainIframe" src="" allowfullscreen></iframe>
-            </div>
-        </div>
-        <div class="ep-grid" id="episodeContainer"></div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        // Initialize Swiper
-        const swiper = new Swiper(".mySwiper", {
-            effect: "coverflow", grabCursor: true, centeredSlides: true,
-            slidesPerView: "auto", loop: true, autoplay: { delay: 3000 }
-        });
-
-        // Global Data Fetching (Jikan API)
-        async function loadData() {
+        async function init() {
             try {
-                const res = await fetch('https://api.jikan.moe/v4/top/anime?limit=20');
-                const { data } = await res.json();
-                
-                // Render Trending
-                document.getElementById('trending').innerHTML = data.slice(0, 10).map(anime => `
-                    <div class="swiper-slide" style="background: url('${anime.images.jpg.large_image_url}') center/cover">
-                        <div class="slide-overlay"><h3>${anime.title}</h3></div>
+                // جلب البيانات من ملف data.json الذي أنشأته
+                const res = await fetch('data.json');
+                const data = await res.json();
+                const grid = document.getElementById('mainGrid');
+
+                grid.innerHTML = data.animes.map(anime => `
+                    <div class="card" onclick="openPlayer('${anime.title}', ${JSON.stringify(anime.episodes)})">
+                        <img src="${anime.poster}">
+                        <h3>${anime.title}</h3>
                     </div>
                 `).join('');
-                swiper.update();
-
-                // Render Grid
-                document.getElementById('mainGrid').innerHTML = data.map(anime => `
-                    <div class="anime-card" onclick="openPlayer('${anime.title}', ${anime.episodes})">
-                        <img src="${anime.images.jpg.large_image_url}" loading="lazy">
-                        <div class="card-body">
-                            <h3 style="font-size:0.9rem;">${anime.title}</h3>
-                            <span style="color:var(--primary); font-size:0.8rem;">${anime.score} ⭐</span>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (e) { console.error("API Error", e); }
+            } catch (e) { alert("خطأ في جلب البيانات!"); }
         }
 
-        function openPlayer(title, epCount) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('playerModal').style.display = 'flex';
-            
-            // Generate Fake Episodes for Demo (In real site, you link to your servers)
-            let epHtml = '';
-            for(let i=1; i<=(epCount || 12); i++) {
-                epHtml += `<button class="ep-btn" onclick="setVideo(${i})">${i}</button>`;
-            }
-            document.getElementById('episodeContainer').innerHTML = epHtml;
-            document.body.style.overflow = 'hidden';
+        function openPlayer(title, episodes) {
+            document.getElementById('player').style.display = 'flex';
+            const epList = document.getElementById('epList');
+            epList.innerHTML = episodes.map(ep => `
+                <button class="ep-btn" onclick="play('${ep.url}', this)">${ep.num}</button>
+            `).join('');
+            // تشغيل الحلقة الأولى تلقائياً
+            if(episodes.length > 0) play(episodes[0].url, epList.firstChild);
         }
 
-        function setVideo(epNum) {
-            // هنا تضع رابط مشغلك السحابي الحقيقي
-            // مثال: iframe.src = `https://your-server.com/watch?ep=${epNum}`;
-            document.getElementById('mainIframe').src = `https://www.youtube.com/embed/dQw4w9WgXcQ`; 
+        function play(url, btn) {
+            document.getElementById('mainIframe').src = url;
             document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            if(btn) btn.classList.add('active');
         }
 
         function closePlayer() {
-            document.getElementById('playerModal').style.display = 'none';
+            document.getElementById('player').style.display = 'none';
             document.getElementById('mainIframe').src = '';
-            document.body.style.overflow = 'auto';
         }
 
-        window.onload = loadData;
+        window.onload = init;
     </script>
 </body>
 </html>
