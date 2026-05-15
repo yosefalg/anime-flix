@@ -1,61 +1,343 @@
-<!DOCTYPE html>
+
+index_html = '''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Flix - منصة أنيمي فليكس</title>
-    <!-- مكتبات خارجية -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <title>أنيمي فليكس | Anime Flix - منصة الأنمي العالمية</title>
+    <meta name="description" content="منصة بث أنمي عربية عالمية متكاملة">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Video.js -->
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-    <!-- الخلفية المتحركة -->
-    <div class="bg-animation"></div>
-
-    <!-- الهيدر -->
-    <header>
-        <div class="logo">ANIME <span>FLIX</span></div>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="ابحث عن أنمي... (مثال: One Piece)">
-            <button onclick="searchAnime()"><i class="fas fa-search"></i></button>
-        </div>
-    </header>
-
-    <!-- المحتوى الرئيسي -->
-    <main id="mainContent">
-        <h2 class="section-title">🔥 أحدث الإضافات</h2>
-        <div class="anime-grid" id="animeGrid">
-            <!-- سيتم ملء البطاقات هنا بواسطة الجافاسكربت -->
-        </div>
-    </main>
-
-    <!-- نافذة المشاهدة (Modal) -->
-    <div id="playerModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            
-            <div class="player-container">
-                <video id="videoPlayer" controls></video>
+    <!-- 3D Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="bg-overlay"></div>
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader-container">
+            <div class="anime-loader">
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
             </div>
-
-            <div class="anime-info">
-                <h2 id="animeTitle">عنوان الأنمي</h2>
-                <div class="server-list" id="serverList">
-                    <!-- أزرار السيرفرات -->
+            <h2 class="loader-text">جاري تحميل عالم الأنمي...</h2>
+            <div class="loader-progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="main-nav" id="main-nav">
+        <div class="nav-brand">
+            <div class="logo">
+                <i class="fas fa-play-circle"></i>
+                <span>أنيمي فليكس</span>
+            </div>
+        </div>
+        
+        <div class="nav-links" id="nav-links">
+            <a href="#" class="nav-link active" data-section="home">
+                <i class="fas fa-home"></i> الرئيسية
+            </a>
+            <a href="#" class="nav-link" data-section="trending">
+                <i class="fas fa-fire"></i> الأكثر شهرة
+            </a>
+            <a href="#" class="nav-link" data-section="movies">
+                <i class="fas fa-film"></i> أفلام الأنمي
+            </a>
+            <a href="#" class="nav-link" data-section="favorites">
+                <i class="fas fa-heart"></i> المفضلة
+            </a>
+            <a href="#" class="nav-link" data-section="history">
+                <i class="fas fa-clock"></i> سجل المشاهدة
+            </a>
+        </div>
+        
+        <div class="nav-actions">
+            <button class="search-toggle" id="search-toggle">
+                <i class="fas fa-search"></i>
+            </button>
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-container">
+            <button class="search-close" id="search-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="ابحث عن أنمي... (مثال: هجوم العمالقة، ناروتو)" autocomplete="off">
+                <button class="search-btn" id="search-btn">بحث</button>
+            </div>
+            <div class="search-filters">
+                <button class="filter-chip active" data-filter="all">الكل</button>
+                <button class="filter-chip" data-filter="tv">مسلسلات</button>
+                <button class="filter-chip" data-filter="movie">أفلام</button>
+                <button class="filter-chip" data-filter="ova">OVA</button>
+            </div>
+            <div class="search-results" id="search-results"></div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        
+        <!-- Hero Section -->
+        <section class="hero-section" id="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">عالم الأنمي<br>بين يديك</h1>
+                <p class="hero-subtitle">أكثر من 50,000 عنوان أنمي من جميع أنحاء العالم. جودة عالية، ترجمة عربية، تجربة سينمائية.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="hero-explore">
+                        <i class="fas fa-compass"></i> استكشف الآن
+                    </button>
+                    <button class="btn btn-secondary" id="hero-search">
+                        <i class="fas fa-search"></i> بحث ذكي
+                    </button>
                 </div>
             </div>
-
-            <div class="episodes-container">
-                <h3>قائمة الحلقات</h3>
-                <div class="episodes-grid" id="episodesGrid">
-                    <!-- قائمة الحلقات -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="stat-anime">0</span>
+                    <span class="stat-label">عنوان أنمي</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="stat-episodes">0</span>
+                    <span class="stat-label">حلقة متاحة</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="stat-users">0</span>
+                    <span class="stat-label">مستخدم نشط</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Categories Section -->
+        <section class="categories-section">
+            <div class="section-header">
+                <h2 class="section-title">التصنيفات</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="categories-grid" id="categories-grid">
+                <!-- Generated by JS -->
+            </div>
+        </section>
+        
+        <!-- Trending Section -->
+        <section class="anime-section" id="trending-section">
+            <div class="section-header">
+                <h2 class="section-title">الأكثر شهرة هذا الموسم</h2>
+                <button class="view-all-btn" data-section="trending">عرض الكل <i class="fas fa-arrow-left"></i></button>
+            </div>
+            <div class="anime-grid" id="trending-grid"></div>
+        </section>
+        
+        <!-- Top Rated Section -->
+        <section class="anime-section" id="top-section">
+            <div class="section-header">
+                <h2 class="section-title">الأعلى تقييماً</h2>
+                <button class="view-all-btn" data-section="top">عرض الكل <i class="fas fa-arrow-left"></i></button>
+            </div>
+            <div class="anime-grid" id="top-grid"></div>
+        </section>
+        
+        <!-- Movies Section -->
+        <section class="anime-section" id="movies-section">
+            <div class="section-header">
+                <h2 class="section-title">أفلام الأنمي</h2>
+                <button class="view-all-btn" data-section="movies">عرض الكل <i class="fas fa-arrow-left"></i></button>
+            </div>
+            <div class="anime-grid" id="movies-grid"></div>
+        </section>
+        
+        <!-- Upcoming Section -->
+        <section class="anime-section" id="upcoming-section">
+            <div class="section-header">
+                <h2 class="section-title">قريباً</h2>
+            </div>
+            <div class="anime-grid" id="upcoming-grid"></div>
+        </section>
+        
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+        
+    </main>
+    
+    <!-- Anime Modal -->
+    <div class="modal-overlay" id="anime-modal">
+        <div class="modal-container">
+            <button class="modal-close" id="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-content">
+                <!-- Left: Video Player -->
+                <div class="modal-video-section">
+                    <div class="video-wrapper">
+                        <video id="anime-player" class="video-js vjs-big-play-centered vjs-theme-city" controls preload="auto" width="640" height="360">
+                            <p class="vjs-no-js">يرجى تفعيل JavaScript لمشاهدة الفيديو</p>
+                        </video>
+                        <div class="video-placeholder" id="video-placeholder">
+                            <div class="placeholder-content">
+                                <i class="fas fa-film"></i>
+                                <h3>المشغل جاهز</h3>
+                                <p>اختر حلقة من القائمة للبدء</p>
+                                <div class="server-buttons" id="server-buttons">
+                                    <!-- Servers generated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="episode-controls">
+                        <button class="ep-btn" id="prev-ep"><i class="fas fa-step-forward"></i> السابق</button>
+                        <span class="ep-current" id="ep-current">الحلقة 1</span>
+                        <button class="ep-btn" id="next-ep">التالي <i class="fas fa-step-backward"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Right: Info -->
+                <div class="modal-info-section">
+                    <div class="modal-header">
+                        <img id="modal-image" src="" alt="Anime Cover">
+                        <div class="modal-header-info">
+                            <h2 id="modal-title">عنوان الأنمي</h2>
+                            <div class="modal-meta">
+                                <span class="badge" id="modal-score"><i class="fas fa-star"></i> 0.0</span>
+                                <span class="badge" id="modal-year">2024</span>
+                                <span class="badge" id="modal-type">TV</span>
+                                <span class="badge" id="modal-status">مستمر</span>
+                            </div>
+                            <div class="modal-actions">
+                                <button class="action-btn favorite-btn" id="favorite-btn">
+                                    <i class="far fa-heart"></i> إضافة للمفضلة
+                                </button>
+                                <button class="action-btn share-btn" id="share-btn">
+                                    <i class="fas fa-share-alt"></i> مشاركة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div class="info-tabs">
+                            <button class="tab-btn active" data-tab="overview">نظرة عامة</button>
+                            <button class="tab-btn" data-tab="episodes">الحلقات</button>
+                            <button class="tab-btn" data-tab="characters">الشخصيات</button>
+                            <button class="tab-btn" data-tab="trailer">الإعلان</button>
+                        </div>
+                        
+                        <div class="tab-content active" id="tab-overview">
+                            <p id="modal-synopsis">الوصف...</p>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">التصنيف:</span>
+                                    <span class="info-value" id="modal-genres">---</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">الحلقات:</span>
+                                    <span class="info-value" id="modal-episodes">---</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">المدة:</span>
+                                    <span class="info-value" id="modal-duration">---</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">الاستوديو:</span>
+                                    <span class="info-value" id="modal-studio">---</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">التصنيف العمري:</span>
+                                    <span class="info-value" id="modal-rating">---</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="tab-episodes">
+                            <div class="episodes-list" id="episodes-list">
+                                <!-- Generated by JS -->
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="tab-characters">
+                            <div class="characters-grid" id="characters-grid">
+                                <!-- Generated by JS -->
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="tab-trailer">
+                            <div class="trailer-container" id="trailer-container">
+                                <div class="no-trailer">
+                                    <i class="fas fa-video-slash"></i>
+                                    <p>لا يوجد إعلان متاح</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="script.js"></script>
+    
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-play-circle"></i>
+                <span>أنيمي فليكس</span>
+            </div>
+            <p class="footer-desc">منصة عربية عالمية لعشاق الأنمي. نقدم لك تجربة مشاهدة فريدة مع أحدث الأنميات وأفضل الجودة.</p>
+            <div class="footer-links">
+                <a href="#">عن الموقع</a>
+                <a href="#">سياسة الخصوصية</a>
+                <a href="#">اتصل بنا</a>
+                <a href="#">DMCA</a>
+            </div>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-discord"></i></a>
+                <a href="#"><i class="fab fa-telegram"></i></a>
+            </div>
+            <p class="footer-copy">© 2026 أنيمي فليكس. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/cache.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
+'''
+
+with open("/mnt/agents/output/anime-flix/index.html", "w", encoding="utf-8") as f:
+    f.write(index_html)
+
+print("index.html created!")
