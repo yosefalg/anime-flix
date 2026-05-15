@@ -1,0 +1,23 @@
+{
+  "last_updated": "2026-05-16",
+  "animes": [
+    {
+      "id": "naruto-shippuden",
+      "title": "Naruto Shippuden",
+      "poster": "https://m.media-amazon.com/images/M/MV5BZjZkN2M5YTgtMjQ2YS00ZDE5LWE3N2ItOTdlMmY5NjE2NjE5XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg",
+      "episodes": [
+        {"num": 1, "url": "https://vidsrc.to/embed/anime/naruto-shippuden/1"},
+        {"num": 2, "url": "https://vidsrc.to/embed/anime/naruto-shippuden/2"},
+        {"num": 3, "url": "https://vidsrc.to/embed/anime/naruto-shippuden/3"}
+      ]
+    },
+    {
+      "id": "one-piece",
+      "title": "One Piece",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTNjNGU4NTUtY2VjNC00Y2VmLTkwOTgtOTZkY2YxM2FjN2ViXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_.jpg",
+      "episodes": [
+        {"num": 1100, "url": "https://vidsrc.to/embed/anime/one-piece/1100"}
+      ]
+    }
+  ]
+}
