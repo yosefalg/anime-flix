@@ -2,22 +2,204 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>أنيمي فليكس | منصة الأنمي العملاقة</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أنيمي فليكس | منصة عملاقة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Tajawal',sans-serif;background:#0a0a0f;color:#fff;direction:rtl;}
+        .loader{position:fixed;inset:0;background:#0a0a0f;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;transition:0.5s;}
+        .loader.hide{opacity:0;visibility:hidden;}
+        .spinner{width:50px;height:50px;border:4px solid #2a2a3a;border-top:4px solid #a855f7;border-radius:50%;animation:spin 0.8s linear infinite;}
+        @keyframes spin{to{transform:rotate(360deg);}}
+        .navbar{background:rgba(10,10,25,0.9);backdrop-filter:blur(12px);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:100;border-bottom:1px solid #a855f780;}
+        .logo{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#a855f7,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent;}
+        .search-area{display:flex;gap:0.5rem;background:#1e1e2e;border-radius:60px;padding:0.3rem 1rem;}
+        .search-area input{background:none;border:none;color:#fff;padding:0.5rem;width:220px;outline:none;}
+        .btn{background:linear-gradient(135deg,#a855f7,#ec4899);border:none;padding:0.5rem 1.2rem;border-radius:40px;color:#fff;font-weight:bold;cursor:pointer;}
+        .btn-outline{background:transparent;border:1px solid #a855f7;}
+        .container{max-width:1400px;margin:2rem auto;padding:0 1rem;}
+        .section-title{font-size:1.8rem;margin:1.5rem 0 1rem;display:flex;align-items:center;gap:10px;}
+        .anime-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.5rem;}
+        .anime-card{background:rgba(20,20,35,0.8);backdrop-filter:blur(8px);border-radius:20px;overflow:hidden;transition:0.3s;cursor:pointer;border:1px solid #a855f7;}
+        .anime-card:hover{transform:translateY(-8px);box-shadow:0 15px 30px -10px #a855f7;}
+        .anime-card img{width:100%;aspect-ratio:2/3;object-fit:cover;}
+        .anime-card h3{padding:0.8rem;font-size:0.9rem;text-align:center;}
+        .modal{position:fixed;inset:0;background:rgba(0,0,0,0.98);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;z-index:1000;}
+        .modal.active{display:flex;}
+        .modal-content{background:#0f0f1a;border-radius:30px;width:95%;max-width:1100px;max-height:90vh;overflow-y:auto;border:1px solid #a855f7;}
+        .video-js{width:100%;aspect-ratio:16/9;}
+        .episode-list{display:flex;flex-wrap:wrap;gap:0.7rem;padding:1rem;}
+        .ep-btn{background:#2a2a3a;padding:0.4rem 1rem;border-radius:30px;cursor:pointer;}
+        .ep-btn.active{background:linear-gradient(135deg,#a855f7,#ec4899);}
+        @media (max-width:640px){.navbar{flex-direction:column;gap:0.5rem;}.anime-grid{grid-template-columns:repeat(2,1fr);}}
+    </style>
 </head>
 <body>
-    <div id="loader" class="loader"><div class="spinner"></div><p>جاري تحميل المنصة العملاقة...</p></div>
-    <header id="header"></header>
-    <main id="app"></main>
-    <div id="modal" class="modal"></div>
-    <footer id="footer"></footer>
+<div class="loader" id="loader"><div class="spinner"></div><p>جاري تحميل المنصة العملاقة...</p></div>
+<header id="header"></header>
+<main id="app"></main>
+<div id="modal" class="modal"></div>
+<footer id="footer"></footer>
+<script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+<script type="module">
+    // جميع الأكواد مدمجة هنا بدون ملفات خارجية
+    const API_SOURCES = [
+        { name:'Consumet', base:'https://api.consumet.org/anime/gogoanime', trending:'/top-airing', search:'/search?keyw=', info:'/info/', watch:'/watch/' },
+        { name:'Anify', base:'https://api.anify.tv', trending:'/trending', search:'/search?query=', info:'/info/', watch:'/watch/' }
+    ];
+    let currentEpisodes = [];
+    let player = null;
 
-    <!-- المكتبات الخارجية -->
-    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
-    <script type="module" src="js/app.js"></script>
+    async function fetchWithFallback(endpoint, type, query='') {
+        for(const src of API_SOURCES) {
+            let url = '';
+            if(type==='trending') url = src.base+src.trending;
+            else if(type==='search') url = src.base+src.search+encodeURIComponent(query);
+            else if(type==='info') url = src.base+src.info+endpoint;
+            else if(type==='watch') url = src.base+src.watch+endpoint;
+            else continue;
+            try {
+                const res = await fetch(url);
+                if(!res.ok) throw new Error();
+                const data = await res.json();
+                console.log(`✅ ${src.name}`);
+                return data;
+            } catch(e){ console.warn(`❌ ${src.name}`); }
+        }
+        throw new Error('جميع المصادر فشلت');
+    }
+
+    async function loadTrending() {
+        const data = await fetchWithFallback('','trending');
+        return data.results || data.data || [];
+    }
+
+    async function searchAnime(q) {
+        const data = await fetchWithFallback('','search',q);
+        return data.results || data.data || [];
+    }
+
+    async function getInfo(id) {
+        return await fetchWithFallback(id,'info');
+    }
+
+    async function getWatchUrl(epId) {
+        const data = await fetchWithFallback(epId,'watch');
+        const src = (data.sources || []).find(s=>s.url && s.url.startsWith('http'));
+        return src ? src.url : null;
+    }
+
+    function renderCards(container, list) {
+        container.innerHTML = list.map(a=>`
+            <div class="anime-card" data-id="${a.id||a.animeId}">
+                <img src="${a.image||a.img||'https://placehold.co/200x300'}" onerror="this.src='https://placehold.co/200x300'">
+                <h3>${a.title}</h3>
+            </div>
+        `).join('');
+        document.querySelectorAll('.anime-card').forEach(c=>{
+            c.onclick = ()=>openModal(c.dataset.id);
+        });
+    }
+
+    async function openModal(id) {
+        document.getElementById('loader').classList.remove('hide');
+        const info = await getInfo(id);
+        currentEpisodes = info.episodes || [];
+        const modal = document.getElementById('modal');
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div style="display:flex; justify-content:space-between; padding:1rem;"><h3>${info.title||'عنوان'}</h3><button id="closeModalBtn" style="background:none;font-size:1.8rem;">&times;</button></div>
+                <div id="playerContainer"></div>
+                <div id="episodesContainer" class="episode-list"></div>
+            </div>
+        `;
+        document.getElementById('closeModalBtn').onclick = ()=>{ modal.classList.remove('active'); if(player) player.dispose(); };
+        renderEpisodes();
+        modal.classList.add('active');
+        document.getElementById('loader').classList.add('hide');
+        if(currentEpisodes.length) playEpisode(currentEpisodes[0].id||currentEpisodes[0].episodeId);
+    }
+
+    function renderEpisodes() {
+        const cont = document.getElementById('episodesContainer');
+        cont.innerHTML = currentEpisodes.map((ep,i)=>`<div class="ep-btn" data-ep="${ep.id||ep.episodeId||i}">${ep.number||i+1}</div>`).join('');
+        document.querySelectorAll('.ep-btn').forEach(btn=>{
+            btn.onclick = async ()=>{
+                document.querySelectorAll('.ep-btn').forEach(b=>b.classList.remove('active'));
+                btn.classList.add('active');
+                await playEpisode(btn.dataset.ep);
+            };
+        });
+    }
+
+    async function playEpisode(epId) {
+        const url = await getWatchUrl(epId);
+        const container = document.getElementById('playerContainer');
+        if(player) player.dispose();
+        if(url) {
+            container.innerHTML = `<video id="anime-video" class="video-js vjs-big-play-centered" controls preload="auto"></video>`;
+            player = videojs('anime-video', { controls:true, autoplay:true, sources:[{src:url, type:'application/x-mpegURL'}] });
+        } else {
+            container.innerHTML = '<div style="padding:2rem;text-align:center;">فشل تحميل الفيديو</div>';
+        }
+    }
+
+    async function buildUI() {
+        document.getElementById('header').innerHTML = `
+            <nav class="navbar">
+                <div class="logo"><i class="fas fa-crown"></i> أنيمي فليكس</div>
+                <div class="search-area"><input type="text" id="searchInput" placeholder="ابحث..."><button id="searchBtn" class="btn"><i class="fas fa-search"></i></button></div>
+                <button id="favoritesBtn" class="btn-outline"><i class="fas fa-heart"></i> مفضلتي</button>
+            </nav>
+        `;
+        document.getElementById('app').innerHTML = `
+            <div class="container">
+                <div class="section-title"><i class="fas fa-fire"></i> الأكثر مشاهدة</div>
+                <div id="trendingGrid" class="anime-grid"></div>
+                <div class="section-title"><i class="fas fa-robot"></i> البحث الذكي</div>
+                <div style="background:#1a1a2a; border-radius:30px; padding:1.5rem; text-align:center;">
+                    <p>صف لي الأنمي:</p>
+                    <div style="display:flex; gap:1rem; margin-top:1rem; flex-wrap:wrap; justify-content:center;">
+                        <input type="text" id="aiQuery" style="flex:2; padding:0.8rem; border-radius:40px; background:#2a2a3a; color:white; border:none;">
+                        <button id="aiSearchBtn" class="btn">بحث ذكي</button>
+                    </div>
+                    <div id="aiResults" style="margin-top:1.5rem;"></div>
+                </div>
+            </div>
+        `;
+        document.getElementById('footer').innerHTML = `<div style="text-align:center; padding:2rem;">© 2026 أنيمي فليكس</div>`;
+        document.getElementById('searchBtn').onclick = async ()=>{
+            const q = document.getElementById('searchInput').value;
+            if(!q) return;
+            document.getElementById('loader').classList.remove('hide');
+            const results = await searchAnime(q);
+            renderCards(document.getElementById('trendingGrid'), results.slice(0,24));
+            document.getElementById('loader').classList.add('hide');
+        };
+        document.getElementById('aiSearchBtn').onclick = async ()=>{
+            const q = document.getElementById('aiQuery').value;
+            if(!q) return;
+            const all = await loadTrending();
+            const matched = all.filter(a=>a.title.toLowerCase().includes(q.toLowerCase())).slice(0,12);
+            const resultsDiv = document.getElementById('aiResults');
+            if(!matched.length) resultsDiv.innerHTML = '<p>لا نتائج</p>';
+            else {
+                const temp = document.createElement('div');
+                temp.className = 'anime-grid';
+                renderCards(temp, matched);
+                resultsDiv.innerHTML = '';
+                resultsDiv.appendChild(temp);
+            }
+        };
+        document.getElementById('loader').classList.remove('hide');
+        const trending = await loadTrending();
+        renderCards(document.getElementById('trendingGrid'), trending.slice(0,24));
+        document.getElementById('loader').classList.add('hide');
+    }
+    buildUI();
+</script>
 </body>
 </html>
